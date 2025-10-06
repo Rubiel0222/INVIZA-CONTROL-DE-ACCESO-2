@@ -1,0 +1,12 @@
+<?php
+$host = "13.59.48.70";       // IP pública de tu servidor MySQL
+$usuario = "rubiel";  // Usuario con permisos
+$contrasena = "abc123";
+$base_datos = "inviza";      // ← nombre correcto de la base
+
+$conexion = new mysqli($host, $usuario, $contrasena, $base_datos);
+
+if ($conexion->connect_error) {
+    die("❌ Error de conexión: " . $conexion->connect_error);
+}
+?>

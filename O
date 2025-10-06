@@ -1,0 +1,9 @@
+<?php
+$conexion = mysqli_connect("13.59.48.70", "rubiel", "abc123", "inviza");
+
+if (!$conexion) {
+    echo "Error de conexión: " . mysqli_connect_error();
+} else {
+    echo "Conexión a la base de datos exitosa.";
+}
+?>
