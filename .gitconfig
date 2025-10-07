@@ -3,3 +3,5 @@
 	email = rubielquintero0222@gmail.com
 [init]
 	defaultBranch = main
+[safe]
+	directory = /var/www/html/inviza
