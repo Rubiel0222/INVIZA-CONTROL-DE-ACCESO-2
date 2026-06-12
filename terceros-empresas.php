@@ -1,0 +1,220 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: inicio_sesion.php");
+    exit();
+}$tiempo_inactividad = 900; // 15 minutos en segundos
+
+if (isset($_SESSION['ultimo_acceso'])) {
+    $tiempo_transcurrido = time() - $_SESSION['ultimo_acceso'];
+    if ($tiempo_transcurrido > $tiempo_inactividad) {
+        session_unset();
+        session_destroy();
+        header("Location: inicio_sesion.php?expirado=1");
+        exit();
+    }
+}
+$_SESSION['ultimo_acceso'] = time();
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control de Accesos - Terceros > Empresas</title>
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/slick-theme.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="css/templatemo.css">
+<link rel="stylesheet" href="css/fontawesome.css">
+<link rel="stylesheet" href="css/fontawesome.min.css">
+<link rel="stylesheet" href="css/slick-theme.css">
+<link rel="stylesheet" href="css/slick.min.css">
+<link rel="stylesheet" href="CSS/templatemo.min.css">
+    <link rel="stylesheet" href="CSS/styles_terceros_empresas.css">
+    <script src="JS/tercero_empresa.js" defer></script> <!-- Enlace al archivo script.js -->
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const timeElement = document.getElementById("current-time");
+            timeElement.textContent = now.toLocaleTimeString();
+        }
+        setInterval(updateTime, 1000);
+    </script>
+    <style>
+        body {
+    font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url('IMAGENES/innovacion\ y\ \ seguridad.jpg') no-repeat center center fixed;
+    background-size: cover;
+        }
+     
+    </style>
+</head>
+</header>
+<nav class="navbar navbar-expand-lg bg-dark navbar-light" id="templatemo_nav_top">
+    <div class="container text-light">        
+        <div class="w-1000 d-flex justify-content-between">
+            <div>
+                <i class="fa fa-envelope mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">infoINVIZA.com</a>
+                <i class="fa fa-phone mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+            </div>
+                    <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored">
+                        <i class="fab fa-facebook-f fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.instagram.com" target="_blank">
+                        <i class="fab fa-instagram fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.twitter.com" target="_blank">
+                        <i class="fab fa-twitter fa-sm fa-fw me-2"></i>
+                    </a>
+                </div>
+              </div>
+        </div>
+    </div>
+</nav>
+   </header>
+<body>
+
+    <!-- Encabezado superior -->
+    <div class="header">
+        <img src="IMAGENES/logo_inviza.jpg" alt="Logo Inviza.jpg">
+        <h1>Control de Accesos</h1>
+        <div class="time">
+            <span id="current-time"></span>
+            <button onclick="window.location.href='pagina_inicial.php'">pagina inicial</button>
+        </div>
+    </div>
+
+    <!-- Contenido principal -->
+     <br><br><br>
+    <div class="main">
+        <h2>Terceros > Empresas</h2>
+
+        <div class="table-container">
+
+            <!-- Búsqueda y paginación -->
+            <div class="search-container">
+                <input type="text" placeholder="Buscar...">
+               
+                                <select id="page">
+                    <option value="1">Página 1</option>
+                    <option value="2">Página 2</option>
+                    <option value="3">Página 3</option>
+                </select>
+                <button class="add-button" onclick="window.location.href='empresas.php'">Agregar Nuevo Registro</button>
+            </div>
+
+     <!-- Tabla -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre Empresa</th>
+          <th>NIT</th>
+          <th>Teléfono</th>
+          <th>Dirección</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php include 'mostrar_empresas.php'; ?>
+      </tbody>
+    </table>    
+            </table>
+
+            <!-- Paginación -->
+            <div class="pagination-container">
+                <div>
+                    <label for="rows">Mostrar filas:</label>
+                    <select id="rows">
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                    </select>
+                </div>
+                <div>
+                    <button onclick="irPagina()">Ir a página</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+function cargarEmpresas() {
+  fetch('mostrar_empresas.php')
+    .then(response => response.text())
+    .then(data => {
+      document.querySelector("tbody").innerHTML = data;
+      agregarListeners(); // Vuelve a asignar los eventos de editar/eliminar
+    });
+}
+
+function agregarListeners() {
+  document.querySelectorAll(".editar").forEach(boton => {
+    boton.addEventListener("click", function () {
+      const id = this.dataset.id;
+      alert(`Editar empresa ID: ${id}`);
+    });
+  });
+
+  document.querySelectorAll(".eliminar").forEach(boton => {
+    boton.addEventListener("click", function () {
+      const id = this.dataset.id;
+      if (confirm(`¿Estás seguro de eliminar la empresa con ID ${id}?`)) {
+        // Aquí puedes integrar una llamada AJAX para eliminar
+        console.log(`Eliminar empresa ID: ${id}`);
+        // Después de eliminar:
+        cargarEmpresas(); 
+      }
+    });
+  });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  cargarEmpresas();
+});
+</script>
+
+    <footer>
+        <!--inicio pie pagina-->
+        <br><br><br><br><br><br><br><br><br><br>
+        <footer class="bg-dark" id="templatemo_footer">
+         <div class="container text-light">
+             <div class="row">
+                 <div class="col-md-4 pt-0">       
+                     <h2 class="text-light bg-dark pb-3 light-logo">INVIZA control de acceso</h2>
+                     <div class="contact-info">
+                         <div class="contact-item">
+                             <i class="fas fa-map-marker-alt fa-fw"></i>
+                             Local Principal - Madrid, Colombia
+                         </div>
+                         <div class="contact-item">
+                             <i class="fa fa-envelope mx-2"></i>
+                             <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">contacto: INVIZA@gmail.com</a>
+                         </div>
+                         <div class="contact-item">
+                             <i class="fa fa-phone mx-2"></i>
+                             <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="w-100 bg-dark py-3"> 
+             <div class="container"> 
+                 <div class="row pt-2"> 
+                     <p class="text-left text-light"> 
+                         Copyright &copy; 2024 - ProdArt | Diseñado por: Rubiel Quintero - David Andres Correa
+                     </p>
+                 </div>
+             </div>
+         </div>
+     </footer>
+    </body>
+
+</html>

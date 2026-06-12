@@ -1,88 +1,211 @@
 <?php
-header("Content-Type: application/json");
-
-// Configuración de conexión
-$servername = "localhost";
-$username = "root";
-$password = "";
-$database = "inviza";
-
-$conn = new mysqli($servername, $username, $password, $database);
-if ($conn->connect_error) {
-    echo json_encode(["error" => "❌ Error en la conexión: " . $conn->connect_error]);
-    exit;
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: inicio_sesion.php");
+    exit();
 }
 
-// Función para validar entrada
-function validateInput($data) {
-    return htmlspecialchars(trim($data));
-}
-
-// Procesamiento de solicitudes
-$method = $_SERVER["REQUEST_METHOD"];
-
-if ($method == "GET") {
-    // 🔍 Obtener lista de funcionarios
-    $sql = "SELECT id, documento, nombres, sucursales, zona, estado, fecha_inicio, fecha_fin FROM funcionarios";
-    $result = $conn->query($sql);
-
-    if (!$result) {
-        echo json_encode(["error" => "❌ Error en la consulta SQL: " . $conn->error]);
-        exit;
-    }
-
-    $funcionarios = [];
-    while ($row = $result->fetch_assoc()) {
-        $funcionarios[] = $row;
-    }
-
-    echo json_encode($funcionarios);
-} elseif ($method == "POST") {
-    // ➕ Insertar nuevo funcionario
-    $documento = validateInput($_POST["documento"]);
-    $nombres = validateInput($_POST["nombres"]);
-    $sucursal = validateInput($_POST["sucursal"]);
-    $zona = validateInput($_POST["zona"]);
-    $estado = validateInput($_POST["estado"]);
-    $fecha_inicio = validateInput($_POST["fecha_inicio"]);
-    $fecha_fin = validateInput($_POST["fecha_fin"]);
-
-    if (!empty($documento) && !empty($nombres)) {
-        $sql = "INSERT INTO funcionarios (documento, nombres, sucursales, zona, estado, fecha_inicio, fecha_fin) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssssss", $documento, $nombres, $sucursal, $zona, $estado, $fecha_inicio, $fecha_fin);
-
-        if ($stmt->execute()) {
-            echo json_encode(["message" => "✅ Funcionario agregado exitosamente"]);
-        } else {
-            echo json_encode(["error" => "❌ Error al guardar: " . $stmt->error]);
-        }
-
-        $stmt->close();
-    } else {
-        echo json_encode(["error" => "❌ Faltan campos obligatorios"]);
-    }
-} elseif ($method == "DELETE") {
-    // 🗑 Eliminar funcionario por ID
-    parse_str(file_get_contents("php://input"), $data);
-    $id = $data["id"] ?? "";
-
-    if (!empty($id)) {
-        $sql = "DELETE FROM funcionarios WHERE id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $id);
-
-        if ($stmt->execute()) {
-            echo json_encode(["message" => "✅ Funcionario eliminado correctamente"]);
-        } else {
-            echo json_encode(["error" => "❌ Error al eliminar: " . $stmt->error]);
-        }
-
-        $stmt->close();
-    } else {
-        echo json_encode(["error" => "❌ ID inválido"]);
+$tiempo_inactividad = 900; // 15 minutos en segundos
+if (isset($_SESSION['ultimo_acceso'])) {
+    $tiempo_transcurrido = time() - $_SESSION['ultimo_acceso'];
+    if ($tiempo_transcurrido > $tiempo_inactividad) {
+        session_unset();
+        session_destroy();
+        header("Location: inicio_sesion.php?expirado=1");
+        exit();
     }
 }
+$_SESSION['ultimo_acceso'] = time();
 
-$conn->close();
+// 🔹 Conexión a la base de datos
+
+$conexion = new mysqli("localhost", "rubiel", "abc123", "inviza");
+if ($conexion->connect_error) {
+    die("Error de conexión: " . $conexion->connect_error);
+}
+
+// 🔹 Consulta a la tabla funcionarios
+$sql = "SELECT id, documento, nombres, sucursales, zona, estado, fecha_inicio, fecha_fin FROM funcionarios";
+$resultado = $conexion->query($sql);
 ?>
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INVIZA Control de Accesos</title>
+    <link rel="stylesheet" href="CSS/styles_funcionarios.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/slick-theme.css">
+    <link rel="stylesheet" href="css/templatemo.css">
+    <link rel="stylesheet" href="css/fontawesome.css">
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/slick-theme.css">
+    <link rel="stylesheet" href="css/slick.min.css">
+    <link rel="stylesheet" href="CSS/templatemo.min.css">
+    <script src="JS/funcionarios.js" defer></script>
+</head>
+<body>
+    <style>
+  body {
+    font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url('IMAGENES/innovacion\ y\ \ seguridad.jpg') no-repeat center center fixed;
+    background-size: cover;
+   
+</body>
+
+ </style>
+<nav class="navbar navbar-expand-lg bg-dark navbar-light" id="templatemo_nav_top">
+    <div class="container text-light">        
+        <div class="w-d-flex justify-content-between">
+                <i class="fa fa-envelope mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">infoINVIZA.com</a>
+                <i class="fa fa-phone mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+            </div>
+                    <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored">
+                        <i class="fab fa-facebook-f fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.instagram.com" target="_blank">
+                        <i class="fab fa-instagram fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.twitter.com" target="_blank">
+                        <i class="fab fa-twitter fa-sm fa-fw me-2"></i>
+                    </a>
+                </div>
+              </div>
+        </div>
+        </div>
+</nav>
+<header>
+    <div class="logo editable">
+        <img src="IMAGENES/logo_inviza.jpg" alt="Logo de INVIZA">
+    </div>
+    <div class="title editable">
+        INVIZA CONTROL DE ACCESOS
+</div>
+    <div class="actions">
+           <div class="time" id="currentTime"></div>
+        <button onclick="window.location.href='pagina_inicial.php'">Página Inicial</button>
+            <button class="save-button" style="display: none;">Guardar</button>
+    </div>
+</header>
+
+
+    <script>
+    function updateTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+    }
+ setInterval(updateTime, 1000);
+    updateTime();
+</script>
+
+    <script src="script.js"></script>
+ </style>
+    <div class="container">
+        <h2 style="text-align: center;">Administración de Funcionarios</h2>
+
+        <!-- Controles de búsqueda y opciones -->
+        <div class="table-header">
+            <div class="search">
+                <input type="text" id="searchInput" placeholder="Buscar por documento o nombre">
+                <button id="searchButton">🔍 Buscar</button>
+            </div>
+            <div class="controls">
+                <label for="showRows">Mostrar:</label>
+                <select id="showRows">
+                    <option value="5">5</option>
+                    <option value="10">10</option>
+                    <option value="15">15</option>
+                </select>
+                <button onclick="window.location.href='modulo-Creación-Edición-Funcionarios.php'">agregar funcionario</button>
+            </div>
+        </div>
+
+        <!-- Tabla con la estructura de la base de datos -->
+        <table class="funcionarios-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Documento</th>
+                    <th>Nombre</th>
+                    <th>Sucursal</th>
+                    <th>Zona</th>
+                    <th>Estado</th>
+                    <th>Fecha Inicio</th>
+                    <th>Fecha Fin</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                if ($resultado->num_rows > 0) {
+                    while($row = $resultado->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>".$row['id']."</td>";
+                        echo "<td>".$row['documento']."</td>";
+                        echo "<td>".$row['nombres']."</td>";
+                        echo "<td>".$row['sucursales']."</td>";
+                        echo "<td>".$row['zona']."</td>";
+                        echo "<td>".$row['estado']."</td>";
+                        echo "<td>".$row['fecha_inicio']."</td>";
+                        echo "<td>".$row['fecha_fin']."</td>";
+                        echo "<td>
+                                <a href='editar.php?id=".$row['id']."'>Editar</a> | 
+                                <a href='eliminar.php?id=".$row['id']."'>Eliminar</a>
+                              </td>";
+                        echo "</tr>";
+                    }
+                } else {
+                    echo "<tr><td colspan='9'>No hay registros</td></tr>";
+                }
+                ?>
+            </tbody>
+        </table>
+    </div>
+</body>
+
+
+      <!--inicio pie pagina-->
+   
+   <footer class="bg-dark" id="templatemo_footer">
+    <div class="container text-light">
+        <div class="row">
+            <div class="col-md-4 pt-0">       
+                <h2 class="text-light bg-dark pb-3 light-logo">INVIZA control de acceso</h2>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt fa-fw"></i>
+                        Local Principal - Madrid, Colombia
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa fa-envelope mx-2"></i>
+                        <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">contacto: INVIZA@gmail.com</a>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fa fa-phone mx-2"></i>
+                        <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="w-100 bg-dark py-3"> 
+            <div class="row pt-2"> 
+                <p class="text-left text-light"> 
+                    Copyright &copy; 2024 - ProdArt | Diseñado por: Rubiel Quintero - David Andres Correa
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
+

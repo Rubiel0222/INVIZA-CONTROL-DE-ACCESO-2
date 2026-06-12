@@ -1,0 +1,9 @@
+# Activar el motor de reescritura
+RewriteEngine On
+
+# Evitar redirección automática desde pagina_inicial.html
+RewriteCond %{REQUEST_URI} ^/inviza/pagina_inicial.html$
+RewriteRule ^ - [L]
+
+# Página personalizada para errores 404
+ErrorDocument 404 /inviza/error_404.html

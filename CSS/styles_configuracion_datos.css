@@ -1,0 +1,92 @@
+/* Encabezado */
+header {
+    background-color: rgba(0, 0, 0, 0.8); /* Fondo negro con transparencia */
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 25px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+header .title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    flex-grow: 1;
+}
+
+header .actions button {
+   background-color: #0db13e; 
+   color: #fff;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    border-radius: 5px;
+}
+
+/* Contenedor principal centrado */
+.container {
+    background: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 0 auto;          /* Centra horizontalmente */
+    max-width:650px;       /* Ancho máximo */
+    color: #000;             /* Letras negras */
+}
+
+/* Tabla */
+.table {
+    width: 30%;
+    border-collapse: collapse;
+    color: #000;             /* Letras negras */
+}
+
+.table th,
+.table td {
+    vertical-align: middle;
+    text-align: center;
+    border: 1px solid #000;  /* Borde negro en cada celda */
+    padding: 8px;
+
+}
+
+/* Botones dentro de la tabla */
+.table .btn {
+    min-width: 70px;
+    background-color: rgb(23, 151, 8);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.table .btn:hover {
+    background-color: #ddd;
+    color: #000;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

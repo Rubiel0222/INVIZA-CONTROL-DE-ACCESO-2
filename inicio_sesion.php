@@ -1,0 +1,128 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de Sesión - INVIZA</title>
+    <link rel="icon" href="IMAGENES/favicon.icon" type="image/x-icon">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/templatemo.css">
+<link rel="stylesheet" href="CSS/fontawesome.css">
+<link rel="stylesheet" href="CSS/fontawesome.min.css">
+<link rel="stylesheet" href="CSS/slick-theme.css">
+<link rel="stylesheet" href="CSS/slick.min.css">
+<link rel="stylesheet" href="CSS/templatemo.min.css">
+<link rel="stylesheet" href="CSS/styles_inicio_sesion.css">
+    <script src="JS/inicio_sescion.js" defer></script>
+</head>
+<body>
+    <style>
+body {
+    font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: url('IMAGENES/innovacion\ y\ \ seguridad.jpg') no-repeat center center fixed;
+    background-size: cover;   
+}
+    </style>
+    <!-- Encabezado -->
+        <header>
+        <div class="logo">
+            <img src="IMAGENES/logo_inviza.jpg" alt="Logo de INVIZA">
+        </div>
+        <div class="title">
+            INVIZA CONTROL DE ACCESOS
+        </div>
+        <div class="actions">
+            <div class="time" id="currentTime"></div>
+            
+        </div>
+    </header>
+    <nav id="templatemo_nav_top">
+        <div class="container">
+            <div class="w-1000 d-flex justify-content-between">
+                <div>                
+                    <i class="fa fa-envelope mx-2"></i>
+                    <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">infoINVIZA.com</a>
+                    <i class="fa fa-phone mx-2"></i>
+                    <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+                </div>
+                <div class="social-icons">
+                    <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored">
+                        <i class="fab fa-facebook-f fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.instagram.com" target="_blank">
+                        <i class="fab fa-instagram fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.twitter.com" target="_blank">
+                        <i class="fab fa-twitter fa-sm fa-fw me-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    <!-- Contenedor de inicio de sesión -->
+    <br><br><br><br>
+    <div class="login-container">
+        <h2>Inicio de Sesión</h2>
+        <img src="IMAGENES/logo_inviza.jpg" alt="logo_inviza">
+
+        <!-- Primer formulario -->
+<form id="loginForm" action="procesar_login.php" method="POST">
+  <input type="text" id="nombre_usuario" name="nombre_usuario" placeholder="Usuario" required />
+  <input type="password" id="password" name="password" placeholder="Contraseña" required />
+  <button type="submit" id="ingresarBtn">Ingresar</button>
+</form>
+
+
+
+        <!-- Script embebido o externo -->
+     <div class="forgot-password">
+            <a href="recuperar_contrasena.html">¿Olvidaste tu contraseña?</a>
+        </div>
+        
+        
+        <p id="currentTime"></p>
+        
+
+    <!-- Script para la hora actual -->
+    <script>
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+        }
+
+        setInterval(updateTime, 1000);
+        updateTime();
+    </script>
+<script>
+document.getElementById("loginForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const datos = {
+    nombre_usuario: document.getElementById("nombre_usuario").value,
+    password: document.getElementById("password").value
+  };
+
+  fetch("procesar_login.php", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(datos)
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === "success") {
+      window.location.href = "pagina_inicial.php";
+    } else {
+      alert(data.message);
+    }
+  })
+});
+</script>
+
+    
+</body>
+</html>

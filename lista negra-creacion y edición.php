@@ -1,0 +1,223 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: inicio_sesion.php");
+    exit();
+}$tiempo_inactividad = 900; // 15 minutos en segundos
+
+if (isset($_SESSION['ultimo_acceso'])) {
+    $tiempo_transcurrido = time() - $_SESSION['ultimo_acceso'];
+    if ($tiempo_transcurrido > $tiempo_inactividad) {
+        session_unset();
+        session_destroy();
+        header("Location: inicio_sesion.php?expirado=1");
+        exit();
+    }
+}
+$_SESSION['ultimo_acceso'] = time();
+?>
+
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>lista> negra</title>
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="css/slick-theme.css">
+<link rel="stylesheet" href="css/templatemo.css">
+<link rel="stylesheet" href="css/fontawesome.css">
+<link rel="stylesheet" href="css/fontawesome.min.css">
+<link rel="stylesheet" href="css/slick-theme.css">
+<link rel="stylesheet" href="css/slick.min.css">
+<link rel="stylesheet" href="CSS/templatemo.min.css">   
+    <link rel="stylesheet" href="CSS/styles_listas_negras_creacion_edicion.css">
+    <script src="JS/lista negra-creacion y edicion.js" defer></script>
+</head>
+</header>
+<nav class="text-light navbar navbar-expand-lg bg-dark navbar-light" id="templatemo_nav_top">          
+        <div class="w-1000 d-flex justify-content-between">
+            <div>
+                <i class="fa fa-envelope mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">infoINVIZA.com</a>
+                <i class="fa fa-phone mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+            </div>
+                    <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored">
+                        <i class="fab fa-facebook-f fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.instagram.com" target="_blank">
+                        <i class="fab fa-instagram fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.twitter.com" target="_blank">
+                        <i class="fab fa-twitter fa-sm fa-fw me-2"></i>
+                    </a>
+                </div>
+              </div>
+        </div>   
+</nav>
+</header>
+<style>
+    body {
+font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif;
+margin: 0;
+padding: 0;
+background: url('IMAGENES/innovacion\ y\ \ seguridad.jpg') no-repeat center center fixed;
+background-size: cover;
+    }
+ 
+</style>
+<body>
+    <header>
+        <div class="logo">
+            <img src="IMAGENES/logo_inviza.jpg" alt="Logo de INVIZA">
+        </div>
+        <div class="title editable">
+            INVIZA CONTROL DE ACCESOS
+        </div>
+        <div class="actions">
+               <div class="time" id="currentTime"></div>
+            <button onclick="window.location.href='pagina_inicial.php'">Página Inicial</button>
+                <button class="save-button" style="display: none;">Guardar</button>
+        </div>
+    </header>
+    <!-- Contenedor principal de la interfaz -->
+    <div class="container my-4">
+        <h2 class="text-center mb-4">Consulta de Lista Negra</h2>
+
+        <!-- Barra de búsqueda y controles -->
+        <div class="search-container mb-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex">
+                    <input type="text" class="form-control" placeholder="Buscar..." aria-label="Buscar" style="max-width: 250px;">
+                    <button class="btn btn-outline-secondary ms-2">🔍</button>
+                </div>
+                <div class="page-controls d-flex align-items-center">
+                    <label for="pageSelect" class="me-2">Página:</label>
+                    <select id="pageSelect" class="form-select" aria-label="Número de página" style="max-width: 80px;">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                   <button class="btn btn-success ms-3" onclick="window.location.href='lista negra-creacion y edicion-edicion.php'">
+  Agregar Nuevo Registro
+</button>
+
+                </div>
+            </div>
+        </div>
+   
+  <table class="table table-striped table-bordered">
+    <thead class="table-dark">
+      <tr>
+        <th>ID</th>
+        <th>Documento</th>
+        <th>Nombres</th>
+        <th>Apellidos</th>
+        <th>Tipo</th>
+        <th>Motivo</th>
+        <th>Fecha Registro</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="contenido-lista_negra">
+  <!-- Los datos se insertan desde PHP con JavaScript -->
+</tbody>
+
+     </table>
+</div>
+
+<script>
+function cargarRegistrosListaNegra() {
+  fetch("mostrar_lista_negra.php")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("contenido-lista_negra").innerHTML = data;
+    });
+}
+
+document.addEventListener("DOMContentLoaded", cargarRegistrosListaNegra);
+</script>
+
+      <!-- Script para mostrar la hora actual -->
+<script>
+    // Función para actualizar la hora actual
+    function updateTime() {
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+    }
+    setInterval(updateTime, 1000); // Actualiza cada segundo
+    updateTime(); // Llama la función al cargar la página
+</script>                          
+   <script>
+function cargarRegistrosListaNegra() {
+  fetch("mostrar_lista_negra.php")
+    .then(response => response.text())
+    .then(data => {
+      document.getElementById("contenido-lista_negra").innerHTML = data;
+    });
+}
+
+// Búsqueda en tiempo real
+document.addEventListener("DOMContentLoaded", function () {
+  cargarRegistrosListaNegra();
+
+  const searchInput = document.querySelector('.search-container input[aria-label="Buscar"]');
+  searchInput.addEventListener('input', function () {
+    const query = searchInput.value.toLowerCase();
+    const rows = document.querySelectorAll('#contenido-lista_negra tr');
+
+    rows.forEach(row => {
+      const cells = row.querySelectorAll('td');
+      const rowData = Array.from(cells).map(cell => cell.textContent.toLowerCase());
+      const matches = rowData.some(data => data.includes(query));
+      row.style.display = matches ? '' : 'none';
+    });
+  });
+});
+</script>
+
+    <!-- Pie de página -->
+     <br><br><br><br><br><br><br><br><br>
+    <footer>
+        <footer class="bg-dark" id="templatemo_footer">
+         <div class="text-light">
+             <div class="row">
+                 <div class="col-md-4 pt-0">       
+                     <h2 class="text-light bg-dark pb-3 -logo">INVIZA control de acceso</h2>
+                     <div class="contact-info">
+                         <div class="contact-item">
+                             <i class="fas fa-map-marker-alt fa-fw"></i>
+                             Local Principal - Madrid, Colombia
+                         </div>
+                         <div class="contact-item">
+                             <i class="fa fa-envelope mx-2"></i>
+                             <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">contacto: INVIZA@gmail.com</a>
+                         </div>
+                         <div class="contact-item">
+                             <i class="fa fa-phone mx-2"></i>
+                             <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+         </div>
+         <div class="w-100 bg-dark py-3"> 
+                             <div class="row pt-2"> 
+                     <p class="text-left text-light"> 
+                         Copyright &copy; 2024 - ProdArt | Diseñado por: Rubiel Quintero - David Andres Correa
+                     </p>
+                 </div>
+             </div>
+         </div>
+     </footer>
+</body>
+
+</html>
+

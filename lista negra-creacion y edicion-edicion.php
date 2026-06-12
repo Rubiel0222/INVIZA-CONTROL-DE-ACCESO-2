@@ -1,0 +1,196 @@
+<?php
+session_start();
+if (!isset($_SESSION['usuario'])) {
+    header("Location: inicio_sesion.php");
+    exit();
+}$tiempo_inactividad = 900; // 15 minutos en segundos
+
+if (isset($_SESSION['ultimo_acceso'])) {
+    $tiempo_transcurrido = time() - $_SESSION['ultimo_acceso'];
+    if ($tiempo_transcurrido > $tiempo_inactividad) {
+        session_unset();
+        session_destroy();
+        header("Location: inicio_sesion.php?expirado=1");
+        exit();
+    }
+}
+$_SESSION['ultimo_acceso'] = time();
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Negra > Creación y Edición > Edición</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/slick-theme.css">
+<link rel="stylesheet" href="CSS/templatemo.css">
+<link rel="stylesheet" href="CSS/fontawesome.css">
+<link rel="stylesheet" href="CSS/fontawesome.min.css">
+<link rel="stylesheet" href="CSS/slick-theme.css">
+<link rel="stylesheet" href="CSS/slick.min.css">
+<link rel="stylesheet" href="CSS/templatemo.min.css">   
+    <link rel="stylesheet" href="CSS/styles_listanegra.css">
+   </head>
+<style>
+    body {
+font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif;
+margin: 0;
+padding: 0;
+background: url('IMAGENES/innovacion\ y\ \ seguridad.jpg') no-repeat center center fixed;
+background-size: cover;
+    }
+ 
+</style>
+</header>
+<nav class="text-light navbar navbar-expand-lg bg-dark navbar-light" id="templatemo_nav_top">          
+        <div class="w-1000 d-flex justify-content-between">
+            <div>
+                <i class="fa fa-envelope mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">infoINVIZA.com</a>
+                <i class="fa fa-phone mx-2"></i>
+                <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+            </div>
+                    <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored">
+                        <i class="fab fa-facebook-f fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.instagram.com" target="_blank">
+                        <i class="fab fa-instagram fa-sm fa-fw me-2"></i>
+                    </a>
+                    <a class="text-light" href="https://www.twitter.com" target="_blank">
+                        <i class="fab fa-twitter fa-sm fa-fw me-2"></i>
+                    </a>
+                </div>
+              </div>
+        </div>   
+</nav>
+</header>
+<body>
+
+    <!-- Encabezado de la interfaz -->
+    <header>
+        <div class="logo">
+            <img src="IMAGENES/logo_inviza.jpg" alt="Logo de Inviza">
+        </div>
+        <div class="title">
+            Control de Accesos
+        </div>
+        <div class="actions">
+            <div class="time" id="currentTime">
+                <!-- La hora actual se insertará aquí con JavaScript -->
+            </div>
+            <button onclick="window.location.href='pagina principal.php'">pagina Principal</button>
+        </div>
+    </header>
+
+<!-- Contenedor principal de la interfaz -->
+<br><br><br>
+<div class="container">
+  <h2>Lista Negra > Creación y Edición > Edición</h2>
+
+  <!-- Formulario de ingreso de datos -->
+  <form method="POST" action="guardar_lista_negra.php">
+    <label for="documento">Documento:</label>
+    <input type="number" id="documento" name="documento" placeholder="Número de identificación" required>
+
+    <label for="nombres">Nombres:</label>
+    <input type="text" id="nombres" name="nombres" placeholder="Nombre" required>
+
+    <label for="apellidos">Apellidos:</label>
+    <input type="text" id="apellidos" name="apellidos" placeholder="Apellido" required>
+
+    <label for="estado">Estado:</label>
+    <select id="estado" name="estado" required>
+      <option value="inactivo">Inactivo</option>
+      <option value="activo">Activo</option>
+    </select>
+
+    <label for="tipo">Tipo:</label>
+    <select id="tipo" name="tipo" required>
+      <option value="tipo1">Tipo 1</option>
+      <option value="tipo2">Tipo 2</option>
+      <option value="tipo3">Tipo 3</option>
+    </select>
+
+    <label for="observaciones">Observaciones:</label>
+    <input type="text" id="observaciones" name="observaciones" placeholder="Comentarios">
+
+    <!-- Contenedor de botones -->
+    <div class="button-container">
+      <button type="submit">Guardar Información</button>
+      <button type="button" id="btnRegresar">Regresar</button>
+    </div>
+  </form>
+</div>
+<script> document.getElementById('btnRegresar').addEventListener('click', function () {
+ window.location.href = 'lista negra-creacion y edición.php'; }); </script>
+<script>
+document.querySelector("form").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+
+  fetch("guardar_lista_negra.php", {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+    this.reset();
+  })
+  .catch(err => alert("Error al guardar"));
+});
+</script>
+    <!-- Script para mostrar la hora actual -->
+    <script>
+        // Función para actualizar la hora actual
+        function updateTime() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('currentTime').textContent = `${hours}:${minutes}`;
+        }
+
+        setInterval(updateTime, 1000); // Actualiza cada segundo
+        updateTime(); // Llama la función al cargar la página
+    </script>
+<!-- Pie de página -->
+<br><br><br><br>
+<footer>
+    <footer class="bg-dark" id="templatemo_footer">
+     <div class="text-light">
+         <div class="row">
+             <div class="col-md-4 pt-0">       
+                 <h2 class="text-light bg-dark pb-3 -logo">INVIZA control de acceso</h2>
+                 <div class="contact-info">
+                     <div class="contact-item">
+                         <i class="fas fa-map-marker-alt fa-fw"></i>
+                         Local Principal - Madrid, Colombia
+                     </div>
+                     <div class="contact-item">
+                         <i class="fa fa-envelope mx-2"></i>
+                         <a class="navbar-sa-brand text-light text-decoration-none" href="publicidad.html">contacto: INVIZA@gmail.com</a>
+                     </div>
+                     <div class="contact-item">
+                         <i class="fa fa-phone mx-2"></i>
+                         <a class="navbar-sa-brand text-light text-decoration-none" href="tel:3125843540">3125843540</a>
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+     <div class="w-100 bg-dark py-3"> 
+                         <div class="row pt-2"> 
+                 <p class="text-left text-light"> 
+                     Copyright &copy; 2024 - ProdArt | Diseñado por: Rubiel Quintero - David Andres Correa
+                 </p>
+             </div>
+         </div>
+     </div>
+ </footer>
+          </body>
+
+</html>

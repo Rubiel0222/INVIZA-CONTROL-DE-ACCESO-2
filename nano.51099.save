@@ -1,0 +1,12 @@
+<?php
+$servername = "13.59.48.70";         // IP del servidor remoto
+$username = "rubiel";             // Usuario creado en MySQL
+$password = "abc123";    // Contraseña definida
+$dbname = "inivza";                  // Nombre de la base de datos
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
+}
+?>
