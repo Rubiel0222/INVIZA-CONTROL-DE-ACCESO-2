@@ -79,7 +79,7 @@ body {
 
         <!-- Script embebido o externo -->
      <div class="forgot-password">
-            <a href="recuperar_contrasena.html">¿Olvidaste tu contraseña?</a>
+            <a href="recuperar_contrasena.php">¿Olvidaste tu contraseña?</a>
         </div>
         
         
