@@ -1,47 +1,59 @@
 <?php
-// Conexión a la base de datos
-$conn = new mysqli("localhost", "rubiel", "abcd123", "inviza");
-if ($conn->connect_error) {
-    die("Error de conexión: " . $conn->connect_error);
-}
+require '/var/www/html/inviza/conexion/conexion.php';
 
-// Capturar token desde el enlace
 $token = $_GET['token'] ?? null;
 if (!$token) {
-    die("Token inválido o no proporcionado.");
+    die("<p style='color:red;'>❌ Token inválido o no proporcionado.</p>");
 }
 
-// Si el formulario fue enviado
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $nueva = $_POST['nueva'] ?? null;
-    if (!$nueva) {
-        die("Debe ingresar una nueva contraseña.");
+// Buscar token en la base de datos
+$stmt = $conn->prepare("SELECT id_usuario, token_expira FROM usuarios WHERE token=?");
+if ($stmt === false) {
+    die("❌ Error preparando SELECT: " . $conn->error);
+}
+$stmt->bind_param("s", $token);
+$stmt->execute();
+$result = $stmt->get_result();
+
+if ($row = $result->fetch_assoc()) {
+    // Verificar expiración
+    if (strtotime($row['token_expira']) < time()) {
+        die("<p style='color:red;'>⚠️ El enlace ha expirado.</p>");
     }
 
-    // Encriptar la nueva contraseña
-    $hash = password_hash($nueva, PASSWORD_DEFAULT);
+    // Procesar nueva contraseña
+    if ($_SERVER["REQUEST_METHOD"] === "POST") {
+        $nueva = trim($_POST['nueva'] ?? '');
+        if (empty($nueva)) {
+            die("<p style='color:red;'>❌ Debe ingresar una nueva contraseña.</p>");
+        }
 
-    // Actualizar contraseña en la base de datos
-    $sql = "UPDATE usuarios SET password=?, token=NULL WHERE token=?";
-    $stmt = $conn->prepare($sql);
-    if ($stmt === false) {
-        die("Error en la preparación de la consulta: " . $conn->error);
-    }
-    $stmt->bind_param("ss", $hash, $token);
-    if ($stmt->execute() && $stmt->affected_rows > 0) {
-        // Redirigir al login después de éxito
-        header("Location: inicio_sesion.php?reset=success");
-        exit();
+        // Encriptar la nueva contraseña
+        $hash = password_hash($nueva, PASSWORD_DEFAULT);
+
+        // Actualizar contraseña e invalidar token
+        $sql_update = "UPDATE usuarios SET password=?, token=NULL, token_expira=NULL WHERE id_usuario=?";
+        $stmt_update = $conn->prepare($sql_update);
+        if ($stmt_update === false) {
+            die("❌ Error preparando UPDATE: " . $conn->error);
+        }
+        $stmt_update->bind_param("si", $hash, $row['id_usuario']);
+
+        if ($stmt_update->execute()) {
+            echo "<p style='color:green;'>✅ Contraseña actualizada correctamente.</p>";
+        } else {
+            echo "<p style='color:red;'>❌ Error al actualizar contraseña: " . $conn->error . "</p>";
+        }
     } else {
-        echo "<p style='color:red;'>Error: token inválido o ya utilizado.</p>";
+        // Mostrar formulario
+        echo '<form method="POST">
+                <label>Nueva contraseña:</label>
+                <input type="password" name="nueva" required>
+                <button type="submit">Actualizar</button>
+              </form>';
     }
+} else {
+    die("<p style='color:red;'>❌ Token no válido.</p>");
 }
 ?>
-
-<!-- Formulario HTML para ingresar nueva contraseña -->
-<form method="POST">
-    <label>Nueva contraseña:</label>
-    <input type="password" name="nueva" required>
-    <button type="submit">Actualizar</button>
-</form>
 
