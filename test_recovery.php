@@ -33,8 +33,8 @@ try {
     $mail->isSMTP();
     $mail->Host       = 'smtp.gmail.com';
     $mail->SMTPAuth   = true;
-    $mail->Username   = 'tu_correo@gmail.com'; // tu Gmail
-    $mail->Password   = 'TU_CONTRASEÑA_DE_APLICACIÓN'; // contraseña de aplicación
+    $mail->Username   = 'rubielquintero0222@gmail.com'; // tu Gmail
+    $mail->Password   = 'fqux gpvr pfcl pmxt'; // contraseña de aplicación
     $mail->SMTPSecure = 'tls';
     $mail->Port       = 587;
 

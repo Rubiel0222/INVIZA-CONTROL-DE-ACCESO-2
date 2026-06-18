@@ -1,0 +1,117 @@
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #f0f8f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    padding-top: 120px; /* altura del header */
+}
+
+/* Contenedor principal */
+.login-container {
+    background-color: #ffffff;   /* fondo blanco */
+    padding: 35px 50px;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    width: 400px;
+    text-align: center;          /* centra el contenido */
+    margin-top: 140px;   /* 👈 Ajusta este valor según la altura del header */
+}
+/* Barra de navegación fija */
+#templatemo_nav_top {
+    
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    padding: 15px 0;
+    background-color: #090a09; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#templatemo_nav_top .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+#templatemo_nav_top .navbar-sa-brand {
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+}
+
+#templatemo_nav_top a {
+    color: white;
+    text-decoration: none;
+}
+
+#templatemo_nav_top a:hover {
+    color: #0b0c0b; 
+}
+/* Encabezado fijo */
+header {
+    background-color: #2d2e2d; 
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 10px rgba(14, 13, 13, 0.1);
+}
+
+header .logo img {
+    width: 80px;
+    height: auto;
+}
+
+header .title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    flex-grow: 1;
+    color: #fff;
+}
+
+/* Título */
+h2 {
+    margin-bottom: 25px;
+    color: #000000;              /* texto negro */
+    font-size: 26px;
+    font-weight: 700;
+    text-align: center;          /* centrado */
+}
+
+/* Campo de entrada */
+input[type="email"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+/* Botón */
+button {
+    background-color: #388e3c;
+    color: white;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #2e7d32;
+}
+

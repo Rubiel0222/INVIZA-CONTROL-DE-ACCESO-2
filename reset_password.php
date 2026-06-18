@@ -40,20 +40,28 @@ if ($row = $result->fetch_assoc()) {
         $stmt_update->bind_param("si", $hash, $row['id_usuario']);
 
         if ($stmt_update->execute()) {
-            echo "<p style='color:green;'>✅ Contraseña actualizada correctamente.</p>";
-        } else {
-            echo "<p style='color:red;'>❌ Error al actualizar contraseña: " . $conn->error . "</p>";
-        }
-    } else {
-        // Mostrar formulario
-        echo '<form method="POST">
+    echo "<p style='color:green;'>✅ Contraseña actualizada correctamente.</p>";
+    // Redirigir al login después de 3 segundos
+    header("Refresh:3; url=inicio_sesion.php");
+    exit;
+} else {
+    echo "<p style='color:red;'>❌ Error al actualizar contraseña: " . $conn->error . "</p>";
+}
+
+} else {
+    // Mostrar formulario dentro de contenedor
+    echo '<div class="login-container">
+            <h2>Recuperar contraseña</h2>
+            <form method="POST">
                 <label>Nueva contraseña:</label>
                 <input type="password" name="nueva" required>
                 <button type="submit">Actualizar</button>
-              </form>';
-    }
+            </form>
+          </div>';
+}
 } else {
     die("<p style='color:red;'>❌ Token no válido.</p>");
 }
 ?>
+
 
